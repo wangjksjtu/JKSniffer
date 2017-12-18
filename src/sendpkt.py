@@ -52,7 +52,6 @@ class SendpktGUI(QtGui.QDialog):
         self.count=0
         self.pktrule=self.QInputBox()
         
-        
         self.show()
         
     def GetValues(self):
@@ -78,14 +77,19 @@ class SendpktGUI(QtGui.QDialog):
         else:
            return ''
 
-        self.inter=int(tmp['Inter'])
-        self.count=int(tmp['Count'])
-        data = struct.pack(tmp['Datatype'], int(tmp['Data'].split(',')[0]), int(tmp['Data'].split(',')[1]), int(tmp['Data'].split(',')[2]))
-        
-        if (((tmp['TCPsport']!='')|(tmp['TCPdport']!=''))&(tmp['UDPsport']=='')&(tmp['UDPdport']=='')):
-            RValues=IP(src=tmp['IPsrc'],dst=tmp['IPdst'],ttl=int(tmp['IPttl']))/TCP(sport=int(tmp['TCPsport']),dport=int(tmp['TCPdport']))/data
-        elif (((tmp['UDPsport']!='')|(tmp['UDPdport']!=''))&(tmp['TCPsport']=='')&(tmp['TCPdport']=='')):
-            RValues=IP(src=tmp['IPsrc'],dst=tmp['IPdst'],ttl=int(tmp['IPttl']))/UDP(sport=int(tmp['UDPsport']),dport=int(tmp['UDPdport']))/data
-        else :
-            RValues=None
+        try:
+            self.inter=int(tmp['Inter'])
+            self.count=int(tmp['Count'])
+            data = struct.pack(tmp['Datatype'], int(tmp['Data'].split(',')[0]), int(tmp['Data'].split(',')[1]), int(tmp['Data'].split(',')[2]))
+
+            if (((tmp['TCPsport']!='')|(tmp['TCPdport']!=''))&(tmp['UDPsport']=='')&(tmp['UDPdport']=='')):
+                RValues=IP(src=tmp['IPsrc'],dst=tmp['IPdst'],ttl=int(tmp['IPttl']))/TCP(sport=int(tmp['TCPsport']),dport=int(tmp['TCPdport']))/data
+            elif (((tmp['UDPsport']!='')|(tmp['UDPdport']!=''))&(tmp['TCPsport']=='')&(tmp['TCPdport']=='')):
+                RValues=IP(src=tmp['IPsrc'],dst=tmp['IPdst'],ttl=int(tmp['IPttl']))/UDP(sport=int(tmp['UDPsport']),dport=int(tmp['UDPdport']))/data
+            else :
+                RValues=None
+        except:
+            QtGui.QMessageBox.critical(self, "Warning", 'Valid Format! (Please check the manual first)')
+            return ''
+
         return RValues

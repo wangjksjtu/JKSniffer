@@ -4,6 +4,8 @@ from JKInterface import JKInterface
 from Interface import InterfaceGUI
 from Filter import FilterGUI
 from sendpkt import SendpktGUI
+from Spoofing import SpoofingGUI
+from arp_spoofing import ARP_Spoofing
 import threading
 from scapy.all import *
 from packet import Packet
@@ -28,6 +30,7 @@ class JKSnifferGUI(QtGui.QMainWindow, Ui_MainWindow):
         self.priviledge = True
         self.reassembling_fragdata={}
         self.reassembling_resultdata={}
+        self.color_allowed = True
 
     def init_others(self):
         self.packetsList.setSortingEnabled(False)
@@ -64,15 +67,27 @@ class JKSnifferGUI(QtGui.QMainWindow, Ui_MainWindow):
         self.actionStart.triggered.connect(self.start)
         self.actionStop.triggered.connect(self.stop)
         self.actionClear.triggered.connect(self.clean)
+        self.actionColor.triggered.connect(self.switch_color)
+        self.actionARP.triggered.connect(self.arp)
+        self.actionARP_restore.triggered.connect(self.arp_restore)
         self.filtersApplyBtn.clicked.connect(self.specify_filter)
         self.srchbackBtn.clicked.connect(self.srch_back)
         self.srchApplyBtn.clicked.connect(self.search)
+        self.toolButton.clicked.connect(self.restore_filter)
         self.actionStop.setEnabled(False)
         #self.actionPerference.triggered.connect(self.interface)
 
+    def switch_color(self):
+        self.color_allowed = (not self.color_allowed)
 
     def clear(self):
         self.packetsList.clear()
+
+    def arp(self):
+        self.Spoofing = SpoofingGUI(self.interface)
+
+    def arp_restore(self):
+        self.Spoofing.arp_spoofing.restore()
 
     def select_packet(self):
         self.tab_ethernet_list.clear()
@@ -136,8 +151,30 @@ class JKSnifferGUI(QtGui.QMainWindow, Ui_MainWindow):
         item.setText(3, pkt.dst)
         item.setText(4, pkt.info)
         item.setText(5, pkt.proto)
+        #item.setBackgroundColor(1, QColor=QtGui.QColor(0,255,0))
+        self.add_color(item, pkt.proto)
         self.items.append(item)
-    
+
+    def add_color(self, item, proto):
+        if not self.color_allowed:
+            return
+        if proto == "ICMP":
+            color = QtGui.QColor(100, 149, 237)
+        elif proto == "IPv6":
+            color = QtGui.QColor(255, 192, 203)
+        elif proto == "TCP":
+            color = QtGui.QColor(255, 229, 180)
+        elif proto == "ARP":
+            color = QtGui.QColor(204, 204, 255)
+        elif proto == "UDP":
+            color = QtGui.QColor(240, 248, 245)
+        for i in range(6):
+            item.setBackgroundColor(i, color)
+
+    def specify_color(self, item):
+        for i in range(6):
+            item.setBackgroundColor(i, QtGui.QColor(255, 140, 105))
+
     def pkt_callback(self, packet):
         #pkt.show()
         if self.counter == 0:
@@ -188,7 +225,7 @@ class JKSnifferGUI(QtGui.QMainWindow, Ui_MainWindow):
         if pkt.proto=='ICMP' or pkt.proto=='UDP' or pkt.proto=='TCP':  #values[5]=flags values[6]=frag
             keys,values = pkt.getInfo_IP()
             if values[5]==0x01 or (values[5]==0x00 and values[6]>0):
-                self.reassembling_fragdata.setdefault(values[4],{})               
+                self.reassembling_fragdata.setdefault(values[4],{})
                 self.reassembling_fragdata[values[4]][values[6]]=pkt.packet
                 for frag_tmp in sorted(self.reassembling_fragdata[values[4]].keys()):
                      if (frag_tmp==sorted(self.reassembling_fragdata[values[4]].keys())[0]):
@@ -246,6 +283,8 @@ class JKSnifferGUI(QtGui.QMainWindow, Ui_MainWindow):
         self.filter = rule
         if self.filter == "":
             QtGui.QMessageBox.information(self, "Filter", "You have canceled filter.")
+        elif self.filter == None:
+            QtGui.QMessageBox.information(self, "Filter", "You have cleared filter.")
         else:
             QtGui.QMessageBox.information(self, "Filter", "You have changed filter rule to %s." % rule)
 
@@ -300,8 +339,19 @@ class JKSnifferGUI(QtGui.QMainWindow, Ui_MainWindow):
 
 
     def pkt_send(self):
-        Sendpkt = SendpktGUI(parent=self)
-        send(Sendpkt.pktrule,inter=Sendpkt.inter,count=Sendpkt.count)
+        self.Sendpkt = SendpktGUI(parent=self)
+        #try:
+        if self.Sendpkt.pktrule == '':
+            self.Sendpkt.close()
+        else:
+            self.send_thread = threading.Thread(target=self.__send)
+            send(self.Sendpkt.pktrule, inter=self.Sendpkt.inter, count=self.Sendpkt.count)
+
+    def __send(self):
+        try:
+            send(self.Sendpkt.pktrule, inter=self.Sendpkt.inter, count=self.Sendpkt.count)
+        except:
+            QtGui.QMessageBox.critical(self, "Warning", 'Valid Format! (Please check the manual first)')
 
     def stop(self):
         print "Attempt to stop"
