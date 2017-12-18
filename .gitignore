@@ -103,3 +103,4 @@ ENV/
 # JKSniffer
 .log
 .dvi
+test/
