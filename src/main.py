@@ -24,6 +24,7 @@ class JKSnifferGUI(QtGui.QMainWindow, Ui_MainWindow):
         self.init_treeView()
         self.init_variables()
         self.init_others()
+        self.init_view()
 
     def init_variables(self):
         self.valid_filter = True
@@ -34,6 +35,27 @@ class JKSnifferGUI(QtGui.QMainWindow, Ui_MainWindow):
 
     def init_others(self):
         self.packetsList.setSortingEnabled(False)
+
+    def init_view(self):
+        self.view_list = []
+        self.ARP_check = QtGui.QAction('Poison', self.menuView, checkable=True)
+        self.ARP_restore_check = QtGui.QAction('PRestore', self.menuView, checkable=True)
+        self.send_check = QtGui.QAction('Send', self.menuView, checkable=True)
+        self.pdf_check = QtGui.QAction('Convert', self.menuView, checkable=True)
+        self.filter_check = QtGui.QAction('Filter', self.menuView, checkable=True)
+        self.filter_restore_check = QtGui.QAction('FRstore', self.menuView, checkable=True)
+        self.ARP_check.setChecked(True)
+        self.ARP_restore_check.setChecked(True)
+        self.send_check.setChecked(True)
+        self.pdf_check.setChecked(True)
+        self.filter_check.setChecked(True)
+        self.filter_restore_check.setChecked(True)
+
+        self.construct_view_list()
+        self.bind_view_check()
+
+        #self.toolBar.removeAction(self.actionARP_restore)
+        #self.toolBar.insertAction(self.actionARP, self.actionARP_restore)
 
     def closeEvent(self, QCloseEvent):
         self.my_close()
@@ -53,7 +75,6 @@ class JKSnifferGUI(QtGui.QMainWindow, Ui_MainWindow):
         self.counter = 0
         self.items = []
 
-      
     def bind_action(self):
         self.actionQuit.triggered.connect(self.my_close)
         self.actionOpen.triggered.connect(self.open)
@@ -76,6 +97,44 @@ class JKSnifferGUI(QtGui.QMainWindow, Ui_MainWindow):
         self.toolButton.clicked.connect(self.restore_filter)
         self.actionStop.setEnabled(False)
         #self.actionPerference.triggered.connect(self.interface)
+
+    def bind_view_check(self):
+        self.ARP_check.triggered.connect(self.construct_view)
+        self.ARP_restore_check.triggered.connect(self.construct_view)
+        self.send_check.triggered.connect(self.construct_view)
+        self.pdf_check.triggered.connect(self.construct_view)
+        self.filter_check.triggered.connect(self.construct_view)
+        self.filter_restore_check.triggered.connect(self.construct_view)
+        self.menuView.addAction(self.filter_check)
+        self.menuView.addAction(self.filter_restore_check)
+        self.menuView.addAction(self.ARP_check)
+        self.menuView.addAction(self.ARP_restore_check)
+        self.menuView.addAction(self.send_check)
+        self.menuView.addAction(self.pdf_check)
+
+    def construct_view(self):
+        str_list = ["actionFilter", "actionFRestore", "actionARP",
+                    "actionARP_restore", "actionPacket", "actionConvert_PDF"]
+        for string in str_list:
+            self.toolBar.removeAction(getattr(self, string))
+
+        for i in range(len(self.view_list)):
+            if self.view_list[i] == self.pdf_check:
+                if self.pdf_check.isChecked():
+                    self.toolBar.insertAction(self.actionInterface, self.actionConvert_PDF)
+                continue
+
+            if self.view_list[i].isChecked():
+                self.toolBar.insertAction(self.actionOpen, getattr(self, str_list[i]))
+
+
+    def construct_view_list(self):
+        self.view_list.append(self.filter_check)
+        self.view_list.append(self.filter_restore_check)
+        self.view_list.append(self.ARP_check)
+        self.view_list.append(self.ARP_restore_check)
+        self.view_list.append(self.send_check)
+        self.view_list.append(self.pdf_check)
 
     def switch_color(self):
         self.color_allowed = (not self.color_allowed)
