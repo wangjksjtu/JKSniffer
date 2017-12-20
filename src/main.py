@@ -275,7 +275,7 @@ class JKSnifferGUI(QtGui.QMainWindow, Ui_MainWindow):
             self.packets.append(packet)
             self.pkts.append(pkt)
         else:
-            print "here"
+            print "Unresolved Protocol!"
             self.counter -= 1
             return
 
@@ -289,9 +289,11 @@ class JKSnifferGUI(QtGui.QMainWindow, Ui_MainWindow):
                 for frag_tmp in sorted(self.reassembling_fragdata[values[4]].keys()):
                      if (frag_tmp==sorted(self.reassembling_fragdata[values[4]].keys())[0]):
                         self.reassembling_resultdata[values[4]]=str(self.reassembling_fragdata[values[4]][frag_tmp])
-                        self.reassembling_resultdata[values[4]]=self.reassembling_resultdata[values[4]][0:20]+'\x00\x00'+self.reassembling_resultdata[values[4]][22:]
+                        self.reassembling_resultdata[values[4]]=self.reassembling_resultdata[values[4]][0:20]+\
+                                                                '\x00\x00'+self.reassembling_resultdata[values[4]][22:]
                      else:
-                        self.reassembling_resultdata[values[4]]=self.reassembling_resultdata[values[4]]+str(self.reassembling_fragdata[values[4]][frag_tmp])[34:]
+                        self.reassembling_resultdata[values[4]]=self.reassembling_resultdata[values[4]]+\
+                                                                str(self.reassembling_fragdata[values[4]][frag_tmp])[34:]
                         tos_tmp11,=struct.unpack('B',self.reassembling_resultdata[values[4]][16])
                         tos_tmp12,=struct.unpack('B',self.reassembling_resultdata[values[4]][17])
                         tos_tmp21,=struct.unpack('B',str(self.reassembling_fragdata[values[4]][frag_tmp])[16])
