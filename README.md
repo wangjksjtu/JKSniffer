@@ -32,8 +32,12 @@ It is of great convenience to use this toolkit. Just type following commands in 
 
 #### ScreenShots ####
 
+![MainWindow](https://github.com/wangjksjtu/JKSniffer/blob/master/imgs/JKSniffer.png)
+![Capturing](https://github.com/wangjksjtu/JKSniffer/blob/master/imgs/JKSniffer2.png)
+![TCP Protocol](https://github.com/wangjksjtu/JKSniffer/blob/master/imgs/TCP.png)
+
 For more details about this tool, please check [docs](https://github.com/wangjksjtu/JKSniffer/docs) of this repository (Chinese).
-Any of your contributions to documentations or codes are greatly appreciated. I am
+Any of your contributions to documentations or codes is greatly appreciated.
 
 ### Contributor ###
 - [_wangjksjtu_](https://github.com/wangjksjtu)
