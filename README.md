@@ -1,6 +1,11 @@
 # JKSniffer
 An implementation of Sniffer Tool using Python
 
+[![GitHub stars](https://img.shields.io/github/stars/wangjksjtu/JKSniffer.svg)](https://github.com/wangjksjtu/JKSniffer/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/wangjksjtu/JKSniffer.svg)](https://github.com/wangjksjtu/JKSniffern/network)
+[![GitHub issues](https://img.shields.io/github/issues/wangjksjtu/JKSniffer.svg)](https://github.com/wangjksjtu/JKSniffern/issues)
+[![GitHub license](https://img.shields.io/badge/license-MIT-green.svg)](https://raw.githubusercontent.com/wangjksjtu/JKSniffer/master/LICENSE)
+
 ![icon](https://github.com/wangjksjtu/JKSniffer/blob/master/src/icon/icon.png)
 
 This project is established mainly for its __educational purposes__, which will be a good example for __PyQt__, __Socket__, __Scapy__ and __Threading__. In this project, you will learn how to capture a packet, interpret packets of different protocol (__ARP__, __ICMP__, __IPv4__,  __IPv6__, __TCP__, __UDP__) and create user-friendly GUI with multiple threadings using Python.
