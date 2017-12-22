@@ -2,8 +2,8 @@
 An implementation of Sniffer Tool using Python
 
 [![GitHub stars](https://img.shields.io/github/stars/wangjksjtu/JKSniffer.svg)](https://github.com/wangjksjtu/JKSniffer/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/wangjksjtu/JKSniffer.svg)](https://github.com/wangjksjtu/JKSniffern/network)
-[![GitHub issues](https://img.shields.io/github/issues/wangjksjtu/JKSniffer.svg)](https://github.com/wangjksjtu/JKSniffern/issues)
+[![GitHub forks](https://img.shields.io/github/forks/wangjksjtu/JKSniffer.svg)](https://github.com/wangjksjtu/JKSniffer/network)
+[![GitHub issues](https://img.shields.io/github/issues/wangjksjtu/JKSniffer.svg)](https://github.com/wangjksjtu/JKSniffer/issues)
 [![GitHub license](https://img.shields.io/badge/license-MIT-green.svg)](https://raw.githubusercontent.com/wangjksjtu/JKSniffer/master/LICENSE)
 
 ![icon](https://github.com/wangjksjtu/JKSniffer/blob/master/src/icon/icon.png)
